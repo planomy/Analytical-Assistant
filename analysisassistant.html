@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytical Essay Writing Assistant</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: none;
+        }
+        h2 {
+            font-size: 1.5em;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 40px 0;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .verb-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .verb-list li {
+            background-color: #e9f5ff;
+            border-left: 5px solid #007bff;
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .verb-list li strong {
+            color: #0056b3;
+            font-size: 1.1em;
+        }
+        #chosenText {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .student-sentence-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 0.95em;
+            margin-top: 10px;
+            resize: vertical;
+            background-color: #fff;
+        }
+        .sentence-meta {
+            text-align: right;
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+            padding-right: 5px;
+        }
+        .length-indicator.short { color: #007bff; font-weight: bold; }
+        .length-indicator.medium { color: #28a745; font-weight: bold; }
+        .length-indicator.long { color: #fd7e14; font-weight: bold; }
+
+        #output {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1em;
+            line-height: 1.6;
+            margin-top: 10px;
+            min-height: 180px;
+            background-color: #f8f9fa;
+        }
+        #output:focus {
+            outline: 2px solid #007bff;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .passive { color: red; font-weight: bold; }
+        .basic { color: cyan; background-color: #2b3035; font-weight: bold; padding: 1px 3px; border-radius: 3px; }
+        .stop-word { background-color: #fff3cd; }
+        .key-item { margin-bottom: 25px; }
+        .key-item h4 { margin-bottom: 5px; font-size: 1.2em; }
+        .key-item h4 .swatch { display: inline-block; width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; border-radius: 3px; }
+        .swatch.red { background-color: red; }
+        .swatch.cyan { background-color: cyan; }
+        .swatch.yellow { background-color: #fff3cd; border: 1px solid #ffeeba;}
+        .example { border-left: 3px solid #dee2e6; padding-left: 15px; margin-top: 10px; font-style: italic; color: #495057; }
+        .before { color: #dc3545; }
+        .after { color: #28a745; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Analytical Essay Writing Assistant 📝</h1>
+        <p>This tool helps you elevate your analytical writing. Use the list of strong verbs to practice writing your own analytical sentences. When you are finished, click the "Analyse Text" button to identify passive voice, basic vocabulary, and unnecessary "filler" words.</p>
+
+        <hr>
+
+        <h2>Powerful Analytical Verbs: Practice</h2>
+        <p>For each example, write your own analytical sentence about a text you are studying, using the highlighted verb.</p>
+        
+        <label for="chosenText"><strong>Your Chosen Text:</strong></label>
+        <input type="text" id="chosenText" placeholder="e.g., Shakespeare's 'Macbeth'">
+
+        <div class="section">
+            <ul class="verb-list">
+                <li>
+                    <p><strong>Demonstrates</strong> – Although Macbeth appears noble, Shakespeare demonstrates how ambition corrodes integrity.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'demonstrates'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Highlights</strong> – In moments of dramatic irony, the text highlights the audience’s superior knowledge.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'highlights'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Reveals</strong> – As the tragedy unfolds, Shakespeare reveals the dangers of obsession.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'reveals'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Suggests</strong> – Through symbolic imagery, the soliloquy suggests Hamlet’s paralysis in action.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'suggests'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                 <li>
+                    <p><strong>Emphasises</strong> – While Desdemona pleads for her life, the dialogue emphasises her innocence.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'emphasises'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Illustrates</strong> – Amid violent conflict, the play illustrates the futility of revenge.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'illustrates'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Symbolises</strong> – Under cover of darkness, the setting symbolises secrecy and betrayal.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'symbolises'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Represents</strong> – Against the backdrop of war, the chorus represents the voice of collective fear.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'represents'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Conveys</strong> – In a shifting tone, the playwright conveys Macbeth’s moral collapse.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'conveys'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Exposes</strong> – During Iago’s asides, the structure exposes his hidden malice.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'exposes'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Explores</strong> – While contrasting characters, Shakespeare explores the tension between fate and choice.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'explores'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Challenges</strong> – Instead of reinforcing stereotypes, the play challenges patriarchal authority.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'challenges'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Contrasts</strong> – Across parallel scenes, the text contrasts love with lust.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'contrasts'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Depicts</strong> – Within Desdemona’s final words, Shakespeare depicts grace under pressure.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'depicts'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Undermines</strong> – By twisting language, Iago undermines Othello’s trust in Desdemona.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'undermines'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Portrays</strong> – Amid cascading violence, the imagery portrays blood as both guilt and destiny.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'portrays'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Affirms</strong> – Despite tragic outcomes, the narrative affirms the enduring value of loyalty.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'affirms'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Establishes</strong> – From its opening thunder, the play establishes a mood of unrest.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'establishes'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Positions</strong> – Through careful framing, the playwright positions the audience to sympathise with Macbeth.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'positions'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+                <li>
+                    <p><strong>Reinforces</strong> – Across recurring motifs, Shakespeare reinforces the inevitability of fate.</p>
+                    <textarea class="student-sentence-input" rows="2" placeholder="Now you try: Write your own sentence using 'reinforces'..." spellcheck="true" oninput="updateSentenceMeta(this)"></textarea>
+                    <div class="sentence-meta">Word Count: <span class="word-count">0</span> | Length: <span class="length-indicator short">Short</span></div>
+                </li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <button onclick="analyzeText()">Analyse All My Sentences</button>
+        <h3>Analysed Text</h3>
+        <p>Your highlighted text will appear below. Browsers with built-in grammar checking may also flag issues here.</p>
+        <div id="output" contenteditable="true"></div>
+
+        <hr>
+
+        <h2>Key to Highlights</h2>
+        <div class="section key">
+            <div class="key-item">
+                <h4><span class="swatch red"></span><span class="passive">Passive Words</span></h4>
+                <p><strong>The Problem:</strong> Passive voice often makes your writing sound weak, indirect, and wordy. It hides the agent (the one doing the action). Analytical writing should be direct and confident. Active voice puts the agent first (e.g., "Shakespeare reveals...") which is more authoritative.</p>
+                <div class="example">
+                    <p class="before"><strong>Before:</strong> The audience <span class="passive">is shown</span> the corrupting nature of power.</p>
+                    <p class="after"><strong>After:</strong> Shakespeare <strong>reveals</strong> the corrupting nature of power.</p>
+                </div>
+            </div>
+            <div class="key-item">
+                <h4><span class="swatch cyan"></span><span class="basic">Basic Words</span></h4>
+                <p><strong>The Problem:</strong> Words like "shows," "says," "good," or "bad" are too vague for senior-level analysis. They don't explain *how* the author is creating meaning. Aim for precision. Instead of saying the text "shows" something, ask yourself *how* it does so. Does it *imply*, *suggest*, *critique*, or *reinforce*?</p>
+                <div class="example">
+                    <p class="before"><strong>Before:</strong> The poem <span class="basic">shows</span> the character is <span class="basic">very</span> sad.</p>
+                    <p class="after"><strong>After:</strong> The poem's melancholic imagery <strong>conveys</strong> the character's profound despair.</p>
+                </div>
+            </div>
+            <div class="key-item">
+                <h4><span class="swatch yellow"></span><span class="stop-word">Stop Words</span></h4>
+                <p><strong>The Problem:</strong> Stop words are common "glue" words like "the," "a," "in," "of," and "that." While essential, overusing them can lead to wordy and clunky sentences that dilute your main point. Highlighting them helps you see if you can rephrase your sentences to be more concise and impactful.</p>
+                <div class="example">
+                    <p class="before"><strong>Before:</strong> <span class="stop-word">It is</span> clear <span class="stop-word">that</span> <span class="stop-word">the</span> purpose <span class="stop-word">of</span> <span class="stop-word">the</span> text <span class="stop-word">is to</span> give a warning <span class="stop-word">to the</span> reader <span class="stop-word">about the</span> dangers <span class="stop-word">of</span> hubris.</p>
+                    <p class="after"><strong>After:</strong> The text clearly warns readers against the dangers of hubris.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const passiveWords = new Set(['was', 'were', 'is', 'are', 'has', 'had', 'have', 'be', 'been', 'being', 'get', 'got', 'getting']);
+        const basicWords = new Set(['shows', 'says', 'tells', 'good', 'bad', 'great', 'nice', 'big', 'small', 'a lot', 'lots', 'very', 'really', 'stuff', 'things', 'gets', 'makes', 'uses']);
+        const stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'but', 'by', 'can', 'could', 'did', 'do', 'does', 'down', 'each', 'few', 'for', 'from', 'further', 'he', 'her', 'here', 'him', 'his', 'how', 'i', 'if', 'in', 'into', 'it', 'its', 'just', 'me', 'more', 'most', 'my', 'no', 'nor', 'not', 'now', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'out', 'over', 'own', 'she', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'we', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'would', 'you', 'your']);
+
+        function updateSentenceMeta(textarea) {
+            const text = textarea.value.trim();
+            const words = text === '' ? 0 : text.split(/\s+/).length;
+            
+            // Find the meta-data div that is the next sibling of the textarea
+            const metaDiv = textarea.nextElementSibling;
+            const wordCountSpan = metaDiv.querySelector('.word-count');
+            const lengthIndicatorSpan = metaDiv.querySelector('.length-indicator');
+
+            wordCountSpan.textContent = words;
+
+            // Reset classes
+            lengthIndicatorSpan.classList.remove('short', 'medium', 'long');
+
+            // Update length indicator
+            if (words === 0) {
+                 lengthIndicatorSpan.textContent = 'Short';
+                 lengthIndicatorSpan.classList.add('short');
+            } else if (words <= 12) {
+                lengthIndicatorSpan.textContent = 'Short';
+                lengthIndicatorSpan.classList.add('short');
+            } else if (words <= 25) {
+                lengthIndicatorSpan.textContent = 'Medium';
+                lengthIndicatorSpan.classList.add('medium');
+            } else {
+                lengthIndicatorSpan.textContent = 'Long';
+                lengthIndicatorSpan.classList.add('long');
+            }
+        }
+
+        function analyzeText() {
+            const inputs = document.querySelectorAll('.student-sentence-input');
+            const outputDiv = document.getElementById('output');
+            let allStudentText = '';
+
+            // Combine the text from all input fields
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    allStudentText += input.value.trim() + '\n'; // Add each sentence on a new line
+                }
+            });
+            
+            // This regex finds words and preserves surrounding whitespace and punctuation.
+            const segments = allStudentText.split(/(\b[\w']+\b)/);
+            
+            let highlightedHTML = '';
+
+            segments.forEach(segment => {
+                // Check if the segment is a word (matches word characters and apostrophes)
+                if (/\b[\w']+\b/.test(segment)) {
+                    const lowerWord = segment.toLowerCase();
+                    if (passiveWords.has(lowerWord)) {
+                        highlightedHTML += `<span class="passive">${segment}</span>`;
+                    } else if (basicWords.has(lowerWord)) {
+                        highlightedHTML += `<span class="basic">${segment}</span>`;
+                    } else if (stopWords.has(lowerWord)) {
+                        highlightedHTML += `<span class="stop-word">${segment}</span>`;
+                    } else {
+                        highlightedHTML += segment;
+                    }
+                } else {
+                    // If it's not a word (e.g., space, punctuation), just append it
+                    highlightedHTML += segment;
+                }
+            });
+
+            // Replace newline characters with <br> tags for HTML display
+            outputDiv.innerHTML = highlightedHTML.replace(/\n/g, '<br>');
+        }
+    </script>
+
+</body>
+</html>
+
